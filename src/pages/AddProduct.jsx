@@ -59,32 +59,40 @@ function AddProduct() {
 
 
   // Add Product
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (!form.productName || !form.category || !form.price) {
-      toast.error("Required fields missing");
-      return;
-    }
+  if (
+    !form.productName ||
+    !form.category ||
+    !form.brand ||
+    !form.price ||
+    !form.stock ||
+    !form.description ||
+    !form.image
+  ) {
+    toast.error("Please fill all required fields");
+    return;
+  }
 
-    try {
+  try {
+    const productData = {
+      ...form,
+      finalPrice:
+        Number(form.price) -
+        (Number(form.price) * Number(form.discount || 0)) / 100,
+    };
 
-      await axios.post(
-        `${API_URL}/api/products`,
-        form
-      );
+    await axios.post(`${API_URL}/api/products`, productData);
 
-      toast.success("Product added successfully");
-
-      navigate("/products");
-
-    } catch (error) {
-
-      console.log(error);
-      toast.error("Failed to add product");
-
-    }
-  };
+    toast.success("Product added successfully");
+    navigate("/products");
+  } catch (error) {
+    console.log(error);
+    console.log(error.response?.data);
+    toast.error(error.response?.data?.message || "Failed to add product");
+  }
+};
 
 
   return (
