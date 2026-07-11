@@ -8,7 +8,7 @@ import EditProduct from "./pages/EditProduct";
 import ProductDetails from "./pages/ProductDetails";
 
 import Login from "./pages/Login";
-import ProtectedRoute from "./components/ProtectedRoutes";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
