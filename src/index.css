@@ -1,1 +1,31 @@
 @import "tailwindcss";
+
+@theme {
+  --color-blush-50: #fdf2f4;
+  --color-blush-100: #fce7ea;
+  --color-blush-200: #f9c9d1;
+  --color-blush-300: #f4a3b1;
+  --color-blush-400: #ec7089;
+  --color-blush-500: #e0446a;
+  --color-blush-600: #c72c54;
+  --color-blush-700: #a52048;
+  --color-blush-800: #891d40;
+  --color-blush-900: #741c3b;
+
+  --color-gold-400: #e8c893;
+  --color-gold-500: #d4af6a;
+
+  --font-display: "Playfair Display", serif;
+  --font-body: "Quicksand", sans-serif;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-blush-50);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+}
