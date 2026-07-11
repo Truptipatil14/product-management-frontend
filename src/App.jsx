@@ -7,60 +7,74 @@ import AddProduct from "./pages/AddProduct";
 import EditProduct from "./pages/EditProduct";
 import ProductDetails from "./pages/ProductDetails";
 
+import Login from "./pages/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
+
 function App() {
   return (
     <Routes>
+      {/* Login */}
+      <Route path="/" element={<Login />} />
 
-      {/* DASHBOARD */}
+      {/* Dashboard */}
       <Route
-        path="/"
+        path="/dashboard"
         element={
-          <DashboardLayout>
-            <Dashboard />
-          </DashboardLayout>
+          <ProtectedRoute>
+            <DashboardLayout>
+              <Dashboard />
+            </DashboardLayout>
+          </ProtectedRoute>
         }
       />
 
-      {/* PRODUCTS LIST */}
+      {/* Products */}
       <Route
         path="/products"
         element={
-          <DashboardLayout>
-            <Products />
-          </DashboardLayout>
+          <ProtectedRoute>
+            <DashboardLayout>
+              <Products />
+            </DashboardLayout>
+          </ProtectedRoute>
         }
       />
 
-      {/* ADD PRODUCT */}
+      {/* Add Product */}
       <Route
         path="/add-product"
         element={
-          <DashboardLayout>
-            <AddProduct />
-          </DashboardLayout>
+          <ProtectedRoute>
+            <DashboardLayout>
+              <AddProduct />
+            </DashboardLayout>
+          </ProtectedRoute>
         }
       />
 
-      {/* EDIT PRODUCT */}
+      {/* Edit Product */}
       <Route
         path="/edit-product/:id"
         element={
-          <DashboardLayout>
-            <EditProduct />
-          </DashboardLayout>
+          <ProtectedRoute>
+            <DashboardLayout>
+              <EditProduct />
+            </DashboardLayout>
+          </ProtectedRoute>
         }
       />
 
-      {/* PRODUCT DETAILS */}
+      {/* Product Details */}
       <Route
         path="/product/:id"
         element={
-          <DashboardLayout>
-            <ProductDetails />
-          </DashboardLayout>
+          <ProtectedRoute>
+            <DashboardLayout>
+              <ProductDetails />
+            </DashboardLayout>
+          </ProtectedRoute>
         }
       />
-
     </Routes>
   );
 }
