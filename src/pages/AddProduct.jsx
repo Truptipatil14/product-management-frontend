@@ -28,7 +28,6 @@ function AddProduct() {
     });
   };
 
-
   // Image upload
   const handleImage = async (e) => {
     const file = e.target.files[0];
@@ -38,11 +37,14 @@ function AddProduct() {
     const formData = new FormData();
     formData.append("image", file);
 
+    const token = localStorage.getItem("token");
+
     try {
-      const res = await axios.post(
-        `${API_URL}/api/products/upload`,
-        formData
-      );
+      const res = await axios.post(`${API_URL}/api/products/upload`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       setForm({
         ...form,
@@ -50,64 +52,59 @@ function AddProduct() {
       });
 
       toast.success("Image uploaded successfully");
-
     } catch (error) {
       console.log(error);
       toast.error("Image upload failed");
     }
   };
 
-
   // Add Product
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (
-    !form.productName ||
-    !form.category ||
-    !form.brand ||
-    !form.price ||
-    !form.stock ||
-    !form.description ||
-    !form.image
-  ) {
-    toast.error("Please fill all required fields");
-    return;
-  }
+    if (
+      !form.productName ||
+      !form.category ||
+      !form.brand ||
+      !form.price ||
+      !form.stock ||
+      !form.description ||
+      !form.image
+    ) {
+      toast.error("Please fill all required fields");
+      return;
+    }
 
-  try {
-    const productData = {
-      ...form,
-      finalPrice:
-        Number(form.price) -
-        (Number(form.price) * Number(form.discount || 0)) / 100,
-    };
+    try {
+      const productData = {
+        ...form,
+        finalPrice:
+          Number(form.price) -
+          (Number(form.price) * Number(form.discount || 0)) / 100,
+      };
 
-    await axios.post(`${API_URL}/api/products`, productData);
+      const token = localStorage.getItem("token");
 
-    toast.success("Product added successfully");
-    navigate("/products");
-  } catch (error) {
-    console.log(error);
-    console.log(error.response?.data);
-    toast.error(error.response?.data?.message || "Failed to add product");
-  }
-};
+      await axios.post(`${API_URL}/api/products`, productData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
+      toast.success("Product added successfully");
+      navigate("/products");
+    } catch (error) {
+      console.log(error);
+      console.log(error.response?.data);
+      toast.error(error.response?.data?.message || "Failed to add product");
+    }
+  };
 
   return (
     <div className="p-5">
+      <h2 className="text-xl font-bold mb-4">Add Product</h2>
 
-      <h2 className="text-xl font-bold mb-4">
-        Add Product
-      </h2>
-
-
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col gap-3"
-      >
-
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
         <input
           type="text"
           name="productName"
@@ -116,7 +113,6 @@ const handleSubmit = async (e) => {
           onChange={handleChange}
           className="border p-2"
         />
-
 
         <input
           type="text"
@@ -127,7 +123,6 @@ const handleSubmit = async (e) => {
           className="border p-2"
         />
 
-
         <input
           type="text"
           name="brand"
@@ -136,7 +131,6 @@ const handleSubmit = async (e) => {
           onChange={handleChange}
           className="border p-2"
         />
-
 
         <input
           type="number"
@@ -147,7 +141,6 @@ const handleSubmit = async (e) => {
           className="border p-2"
         />
 
-
         <input
           type="number"
           name="discount"
@@ -156,7 +149,6 @@ const handleSubmit = async (e) => {
           onChange={handleChange}
           className="border p-2"
         />
-
 
         <input
           type="number"
@@ -167,7 +159,6 @@ const handleSubmit = async (e) => {
           className="border p-2"
         />
 
-
         <textarea
           name="description"
           placeholder="Description"
@@ -176,23 +167,12 @@ const handleSubmit = async (e) => {
           className="border p-2"
         />
 
+        <input type="file" onChange={handleImage} className="border p-2" />
 
-        <input
-          type="file"
-          onChange={handleImage}
-          className="border p-2"
-        />
-
-
-        <button
-          type="submit"
-          className="bg-blue-600 text-white p-2 rounded"
-        >
+        <button type="submit" className="bg-blue-600 text-white p-2 rounded">
           Add Product
         </button>
-
       </form>
-
     </div>
   );
 }

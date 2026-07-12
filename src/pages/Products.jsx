@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import { getProducts } from "../services/productService";
-import axios from "axios";
+import {
+  getProducts,
+  deleteProduct as deleteProductApi,
+} from "../services/productService";
 import { Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
@@ -33,29 +35,24 @@ function Products() {
   // DELETE PRODUCT
   const deleteProduct = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/products/${id}`);
+      await deleteProductApi(id);
 
       toast.success("Product Deleted");
 
       setProducts(products.filter((p) => p._id !== id));
     } catch (error) {
-      toast.error("Delete Failed");
+      toast.error(error.response?.data?.message || "Delete Failed");
     }
   };
 
   // FILTER LOGIC (Search + Category)
   const filteredProducts = products
-    .filter((p) =>
-      p.productName.toLowerCase().includes(search.toLowerCase())
-    )
+    .filter((p) => p.productName.toLowerCase().includes(search.toLowerCase()))
     .filter((p) => (category ? p.category === category : true));
 
   // PAGINATION LOGIC
   const start = (page - 1) * perPage;
-  const paginatedProducts = filteredProducts.slice(
-    start,
-    start + perPage
-  );
+  const paginatedProducts = filteredProducts.slice(start, start + perPage);
 
   if (loading) {
     return <h2>Loading...</h2>;
@@ -63,12 +60,10 @@ function Products() {
 
   return (
     <div>
-
       <h1 className="text-2xl font-bold mb-4">Products</h1>
 
       {/* SEARCH + FILTER */}
       <div className="mb-3">
-
         <input
           type="text"
           placeholder="Search product..."
@@ -85,7 +80,6 @@ function Products() {
           <option value="Fashion">Fashion</option>
           <option value="Home">Home</option>
         </select>
-
       </div>
 
       {/* TABLE */}
@@ -93,7 +87,6 @@ function Products() {
         <p>No Products Found</p>
       ) : (
         <table className="w-full border border-collapse">
-
           <thead>
             <tr className="bg-gray-200">
               <th className="border p-2">Name</th>
@@ -107,25 +100,12 @@ function Products() {
           <tbody>
             {paginatedProducts.map((product) => (
               <tr key={product._id}>
+                <td className="border p-2">{product.productName}</td>
+                <td className="border p-2">{product.category}</td>
+                <td className="border p-2">₹{product.price}</td>
+                <td className="border p-2">{product.stock}</td>
 
                 <td className="border p-2">
-                  {product.productName}
-                </td>
-
-                <td className="border p-2">
-                  {product.category}
-                </td>
-
-                <td className="border p-2">
-                  ₹{product.price}
-                </td>
-
-                <td className="border p-2">
-                  {product.stock}
-                </td>
-
-                <td className="border p-2">
-
                   {/* EDIT */}
                   <Link to={`/edit-product/${product._id}`}>
                     <button className="bg-yellow-500 text-white px-3 py-1 rounded mr-2">
@@ -140,19 +120,15 @@ function Products() {
                   >
                     Delete
                   </button>
-
                 </td>
-
               </tr>
             ))}
           </tbody>
-
         </table>
       )}
 
       {/* PAGINATION */}
       <div className="mt-4">
-
         <button
           className="border px-3 py-1 mr-2"
           disabled={page === 1}
@@ -168,9 +144,7 @@ function Products() {
         >
           Next
         </button>
-
       </div>
-
     </div>
   );
 }

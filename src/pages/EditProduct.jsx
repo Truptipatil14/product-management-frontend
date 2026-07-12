@@ -6,26 +6,24 @@ import { toast } from "react-hot-toast";
 function EditProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const [form, setForm] = useState({
-    name: "",
+    productName: "",
     category: "",
     brand: "",
     price: "",
     discount: "",
     stock: "",
-    description: ""
+    description: "",
   });
 
   // GET SINGLE PRODUCT
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:5000/api/products/${id}`
-        );
-
-        setForm(res.data);
+        const res = await axios.get(`${API_URL}/api/products/${id}`);
+        setForm(res.data.data);
       } catch (error) {
         toast.error("Failed to fetch product");
       }
@@ -44,7 +42,7 @@ function EditProduct() {
     e.preventDefault();
 
     // VALIDATION
-    if (!form.name || !form.category || !form.price) {
+    if (!form.productName || !form.category || !form.price) {
       toast.error("Required fields missing");
       return;
     }
@@ -54,16 +52,19 @@ function EditProduct() {
       return;
     }
 
+    const token = localStorage.getItem("token");
+
     try {
-      await axios.put(
-        `http://localhost:5000/api/products/${id}`,
-        form
-      );
+      await axios.put(`${API_URL}/api/products/${id}`, form, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       toast.success("Product Updated Successfully");
       navigate("/products");
     } catch (error) {
-      toast.error("Update Failed");
+      toast.error(error.response?.data?.message || "Update Failed");
     }
   };
 
@@ -72,10 +73,9 @@ function EditProduct() {
       <h2>Edit Product</h2>
 
       <form onSubmit={handleUpdate}>
-
         <input
-          name="name"
-          value={form.name}
+          name="productName"
+          value={form.productName}
           onChange={handleChange}
           placeholder="Product Name"
         />
@@ -129,10 +129,7 @@ function EditProduct() {
         />
         <br />
 
-        <button type="submit">
-          Update Product
-        </button>
-
+        <button type="submit">Update Product</button>
       </form>
     </div>
   );
